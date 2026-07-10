@@ -231,7 +231,6 @@ jobs:
 
         Move-Item dist\Diversion.exe release\
         Move-Item info.txt release\
-        Move-Item config.json release\
 
         if (Test-Path LICENSE) {
           Copy-Item LICENSE release\
