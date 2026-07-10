@@ -271,7 +271,7 @@ class FlagBrowserDemo:
     # ====================== GUI SETUP ======================
     def setup_gui(self):
         dpg.create_context()
-        dpg.create_viewport(title="Flag Browser Dashboard - Demo (Catppuccin Mocha Pink)",
+        dpg.create_viewport(title="Diversion - Demo",
                              width=1280, height=800)
         dpg.setup_dearpygui()
 
@@ -332,7 +332,7 @@ class FlagBrowserDemo:
 
             dpg.add_separator()
             with dpg.group(horizontal=True):
-                dpg.add_text("© 2026 Flag Browser | Made by lumyna.cc", color=CAT["pink"])
+                dpg.add_text("© 2026 Diversion | Made by lumyna.cc", color=CAT["pink"])
                 dpg.add_text("  •  Catppuccin Mocha (Pink)  •  Demo build, no network interception",
                              color=CAT["overlay0"])
 
