@@ -13,6 +13,42 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+# ====================== CATPPUCCIN MOCHA (PINK ACCENT) ======================
+def _hex(h):
+    h = h.lstrip("#")
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+
+CAT = {
+    "rosewater": _hex("f5e0dc"),
+    "flamingo":  _hex("f2cdcd"),
+    "pink":      _hex("f5c2e7"),
+    "mauve":     _hex("cba6f7"),
+    "red":       _hex("f38ba8"),
+    "maroon":    _hex("eba0ac"),
+    "peach":     _hex("fab387"),
+    "yellow":    _hex("f9e2af"),
+    "green":     _hex("a6e3a1"),
+    "teal":      _hex("94e2d5"),
+    "sky":       _hex("89dceb"),
+    "sapphire":  _hex("74c7ec"),
+    "blue":      _hex("89b4fa"),
+    "lavender":  _hex("b4befe"),
+    "text":      _hex("cdd6f4"),
+    "subtext1":  _hex("bac2de"),
+    "subtext0":  _hex("a6adc8"),
+    "overlay2":  _hex("9399b2"),
+    "overlay1":  _hex("7f849c"),
+    "overlay0":  _hex("6c7086"),
+    "surface2":  _hex("585b70"),
+    "surface1":  _hex("45475a"),
+    "surface0":  _hex("313244"),
+    "base":      _hex("1e1e2e"),
+    "mantle":    _hex("181825"),
+    "crust":     _hex("11111b"),
+}
+
+
 class FlagBrowserDemo:
     def get_app_dir(self):
         if getattr(sys, "frozen", False):
@@ -24,7 +60,6 @@ class FlagBrowserDemo:
         self.DEFAULT_JSON_PATH = os.path.join(self.APP_DIR, "flags_demo.json")
         self.JSON_PATH = self.DEFAULT_JSON_PATH
 
-        # Public, non-sensitive source for flag *names* only (no game traffic involved)
         self.FLAGS_URL = "https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/refs/heads/roblox/FVariables.txt"
 
         self.flags_list = []
@@ -129,12 +164,82 @@ class FlagBrowserDemo:
         except Exception:
             pass
 
+    # ====================== THEME ======================
+    def create_theme(self):
+        """Catppuccin Mocha, pink accent. Applied globally; this is a normal
+        decorated/resizable window, not an overlay."""
+        with dpg.theme() as theme:
+            with dpg.theme_component(dpg.mvAll):
+                dpg.add_theme_color(dpg.mvThemeCol_WindowBg, CAT["base"])
+                dpg.add_theme_color(dpg.mvThemeCol_ChildBg, CAT["mantle"])
+                dpg.add_theme_color(dpg.mvThemeCol_PopupBg, CAT["mantle"])
+                dpg.add_theme_color(dpg.mvThemeCol_Border, CAT["surface1"])
+                dpg.add_theme_color(dpg.mvThemeCol_BorderShadow, CAT["crust"])
+
+                dpg.add_theme_color(dpg.mvThemeCol_Text, CAT["text"])
+                dpg.add_theme_color(dpg.mvThemeCol_TextDisabled, CAT["overlay0"])
+
+                dpg.add_theme_color(dpg.mvThemeCol_FrameBg, CAT["surface0"])
+                dpg.add_theme_color(dpg.mvThemeCol_FrameBgHovered, CAT["surface1"])
+                dpg.add_theme_color(dpg.mvThemeCol_FrameBgActive, CAT["surface2"])
+
+                dpg.add_theme_color(dpg.mvThemeCol_TitleBg, CAT["crust"])
+                dpg.add_theme_color(dpg.mvThemeCol_TitleBgActive, CAT["surface0"])
+                dpg.add_theme_color(dpg.mvThemeCol_TitleBgCollapsed, CAT["crust"])
+
+                dpg.add_theme_color(dpg.mvThemeCol_MenuBarBg, CAT["mantle"])
+
+                dpg.add_theme_color(dpg.mvThemeCol_ScrollbarBg, CAT["mantle"])
+                dpg.add_theme_color(dpg.mvThemeCol_ScrollbarGrab, CAT["surface2"])
+                dpg.add_theme_color(dpg.mvThemeCol_ScrollbarGrabHovered, CAT["pink"])
+                dpg.add_theme_color(dpg.mvThemeCol_ScrollbarGrabActive, CAT["mauve"])
+
+                dpg.add_theme_color(dpg.mvThemeCol_CheckMark, CAT["pink"])
+                dpg.add_theme_color(dpg.mvThemeCol_SliderGrab, CAT["pink"])
+                dpg.add_theme_color(dpg.mvThemeCol_SliderGrabActive, CAT["mauve"])
+
+                dpg.add_theme_color(dpg.mvThemeCol_Button, CAT["surface1"])
+                dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, CAT["pink"])
+                dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, CAT["mauve"])
+
+                dpg.add_theme_color(dpg.mvThemeCol_Header, CAT["surface1"])
+                dpg.add_theme_color(dpg.mvThemeCol_HeaderHovered, CAT["pink"])
+                dpg.add_theme_color(dpg.mvThemeCol_HeaderActive, CAT["mauve"])
+
+                dpg.add_theme_color(dpg.mvThemeCol_Separator, CAT["surface1"])
+                dpg.add_theme_color(dpg.mvThemeCol_SeparatorHovered, CAT["pink"])
+                dpg.add_theme_color(dpg.mvThemeCol_SeparatorActive, CAT["mauve"])
+
+                dpg.add_theme_color(dpg.mvThemeCol_ResizeGrip, CAT["surface2"])
+                dpg.add_theme_color(dpg.mvThemeCol_ResizeGripHovered, CAT["pink"])
+                dpg.add_theme_color(dpg.mvThemeCol_ResizeGripActive, CAT["mauve"])
+
+                dpg.add_theme_color(dpg.mvThemeCol_Tab, CAT["surface0"])
+                dpg.add_theme_color(dpg.mvThemeCol_TabHovered, CAT["pink"])
+                dpg.add_theme_color(dpg.mvThemeCol_TabActive, CAT["surface2"])
+                dpg.add_theme_color(dpg.mvThemeCol_TabUnfocused, CAT["surface0"])
+                dpg.add_theme_color(dpg.mvThemeCol_TabUnfocusedActive, CAT["surface1"])
+
+                dpg.add_theme_style(dpg.mvStyleVar_WindowRounding, 8)
+                dpg.add_theme_style(dpg.mvStyleVar_ChildRounding, 6)
+                dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 5)
+                dpg.add_theme_style(dpg.mvStyleVar_PopupRounding, 6)
+                dpg.add_theme_style(dpg.mvStyleVar_ScrollbarRounding, 8)
+                dpg.add_theme_style(dpg.mvStyleVar_GrabRounding, 5)
+                dpg.add_theme_style(dpg.mvStyleVar_TabRounding, 5)
+                dpg.add_theme_style(dpg.mvStyleVar_FramePadding, 8, 4)
+                dpg.add_theme_style(dpg.mvStyleVar_ItemSpacing, 8, 6)
+
+        dpg.bind_theme(theme)
+
     # ====================== GUI SETUP ======================
     def setup_gui(self):
         dpg.create_context()
-        dpg.create_viewport(title="Flag Browser - Demo", width=1150, height=700)
+        dpg.create_viewport(title="Diversion - Demo",
+                             width=1150, height=700)
         dpg.setup_dearpygui()
 
+        self.create_theme()
         self.create_flag_browser_window()
         self.create_application_settings_window()
 
@@ -142,7 +247,7 @@ class FlagBrowserDemo:
 
     # ====================== FLAG BROWSER WINDOW ======================
     def create_flag_browser_window(self):
-        with dpg.window(label="Flag Browser (Demo)", tag="flag_browser_window",
+        with dpg.window(label="Diversion - lumyna.cc (Demo)", tag="flag_browser_window",
                          width=480, height=655, pos=[50, 50]):
             with dpg.tab_bar():
                 with dpg.tab(label="Flag Browser"):
@@ -182,13 +287,17 @@ class FlagBrowserDemo:
                     dpg.add_spacer(height=8)
                     dpg.add_text("", tag="json_feedback")
 
+            dpg.add_separator()
+            with dpg.group(horizontal=True):
+                dpg.add_text("© 2026 Diversion | Made by lumyna.cc", color=CAT["pink"])
+                dpg.add_text("  •  Catppuccin Mocha (Pink)", color=CAT["subtext0"])
             dpg.add_text("Demo build — no network interception features included.",
-                         color=[140, 140, 140])
+                         color=CAT["overlay0"])
 
     def fetch_flags_manual(self, sender=None, app_data=None):
         self.fetch_flags()
         self.update_flag_list()
-        self.show_feedback("Flag names refreshed.", [0, 255, 0])
+        self.show_feedback("Flag names refreshed.", list(CAT["green"]))
 
     # ---- Flag list ----
     def update_flag_list(self, query=""):
@@ -366,7 +475,7 @@ class FlagBrowserDemo:
         self.save_json()
         self.update_enabled_flags_list()
         self.update_appsettings_modified_indicator_cached(flag)
-        self.show_feedback(f"Removed '{flag}'.", [0, 255, 0])
+        self.show_feedback(f"Removed '{flag}'.", list(CAT["green"]))
 
     def show_clear_confirmation(self, s, a):
         if dpg.does_item_exist("clear_confirm_popup"):
@@ -399,11 +508,11 @@ class FlagBrowserDemo:
         self.settings["flagOrder"] = []
         self.save_json()
         self.update_enabled_flags_list()
-        self.show_feedback(f"Cleared {len(flag_order)} modified flags.", [0, 255, 0])
+        self.show_feedback(f"Cleared {len(flag_order)} modified flags.", list(CAT["green"]))
 
     # ====================== APPLICATION SETTINGS WINDOW ======================
     def create_application_settings_window(self):
-        with dpg.window(label="ApplicationSettings", tag="application_settings_window",
+        with dpg.window(label="ApplicationSettings - lumyna.cc (Demo)", tag="application_settings_window",
                          width=600, height=435, pos=[560, 50]):
             with dpg.group(horizontal=True):
                 dpg.add_input_text(tag="appsettings_filter_input", hint="filter", width=-200,
@@ -458,7 +567,7 @@ class FlagBrowserDemo:
                 self.create_appsettings_value_widget(flag, value)
                 dpg.add_text(flag)
                 if is_modified:
-                    dpg.add_text("*", color=[0, 255, 0], tag=f"appsettings_asterisk_{flag}")
+                    dpg.add_text("*", color=CAT["pink"], tag=f"appsettings_asterisk_{flag}")
 
             self.appsettings_flag_groups[flag] = {
                 "group": group_tag, "is_modified": is_modified, "visible": True
@@ -556,7 +665,7 @@ class FlagBrowserDemo:
 
         if is_modified and not was_modified:
             if dpg.does_item_exist(group_tag):
-                dpg.add_text("*", color=[0, 255, 0], tag=asterisk_tag, parent=group_tag)
+                dpg.add_text("*", color=CAT["pink"], tag=asterisk_tag, parent=group_tag)
             cache_entry["is_modified"] = True
         elif not is_modified and was_modified:
             if dpg.does_item_exist(asterisk_tag):
