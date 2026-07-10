@@ -73,6 +73,8 @@ class FlagBrowserDemo:
         self.all_appsettings_flags = []
 
         self.notification_timer = None
+        self.log_entries = []
+        self.active_panel = "flag_browser"
 
         self.create_default_json_if_needed()
         self.load_json_data()
@@ -147,10 +149,44 @@ class FlagBrowserDemo:
         self.notification_timer = threading.Timer(5.0, self.hide_feedback)
         self.notification_timer.daemon = True
         self.notification_timer.start()
+        level = "SUCCESS" if list(color) == list(CAT["green"]) else (
+            "ERROR" if list(color) == list(CAT["red"]) else "INFO")
+        self.log(message, level=level)
 
     def hide_feedback(self):
         if dpg.does_item_exist("json_feedback"):
             dpg.set_value("json_feedback", "")
+
+    # ====================== LOG CONSOLE ======================
+    def log(self, message, level="INFO"):
+        ts = time.strftime("%H:%M:%S")
+        entry = (ts, level, message)
+        self.log_entries.append(entry)
+        if len(self.log_entries) > 300:
+            self.log_entries = self.log_entries[-300:]
+        self._append_log_line(entry)
+
+    def _log_color(self, level):
+        return {
+            "INFO": CAT["subtext1"],
+            "WARNING": CAT["peach"],
+            "ERROR": CAT["red"],
+            "SUCCESS": CAT["green"],
+        }.get(level, CAT["subtext1"])
+
+    def _append_log_line(self, entry):
+        if not dpg.does_item_exist("app_log_list"):
+            return
+        ts, level, message = entry
+        with dpg.group(horizontal=True, parent="app_log_list"):
+            dpg.add_text(f"[{ts}]", color=CAT["overlay0"])
+            dpg.add_text(f"[{level}]", color=self._log_color(level))
+            dpg.add_text(message, color=CAT["text"])
+
+    def clear_log(self, sender=None, app_data=None):
+        self.log_entries.clear()
+        if dpg.does_item_exist("app_log_list"):
+            dpg.delete_item("app_log_list", children_only=True)
 
     def center_popup(self, tag):
         try:
@@ -235,69 +271,137 @@ class FlagBrowserDemo:
     # ====================== GUI SETUP ======================
     def setup_gui(self):
         dpg.create_context()
-        dpg.create_viewport(title="Diversion - Demo",
-                             width=1150, height=700)
+        dpg.create_viewport(title="Flag Browser Dashboard - Demo (Catppuccin Mocha Pink)",
+                             width=1280, height=800)
         dpg.setup_dearpygui()
 
         self.create_theme()
-        self.create_flag_browser_window()
-        self.create_application_settings_window()
+        self.create_dashboard()
 
+        dpg.set_primary_window("root_window", True)
         dpg.show_viewport()
+        self.log("Application started")
+        self.log("Loading configuration")
+        self.log(f"JSON file: {self.JSON_PATH}")
+        if not self.flags_list:
+            self.log("Flag name list is empty (fetch may have failed)", level="WARNING")
+        else:
+            self.log(f"Loaded {len(self.flags_list)} known flag names", level="SUCCESS")
 
-    # ====================== FLAG BROWSER WINDOW ======================
-    def create_flag_browser_window(self):
-        with dpg.window(label="Diversion - lumyna.cc (Demo)", tag="flag_browser_window",
-                         width=480, height=655, pos=[50, 50]):
-            with dpg.tab_bar():
-                with dpg.tab(label="Flag Browser"):
-                    with dpg.child_window(tag="main_content", autosize_x=True, height=-23):
-                        dpg.add_text("Available Flags")
-                        dpg.add_input_text(callback=self.update_search, width=-1,
-                                            tag="search_input", hint="Search")
+    def create_dashboard(self):
+        """One all-in-one docked window: sidebar nav, main content panel that
+        swaps between Flag Browser / ApplicationSettings, and a log console
+        docked at the bottom -- styled after the DearPyGui demo layout."""
+        with dpg.window(tag="root_window", no_title_bar=True, no_move=True,
+                         no_resize=True, no_collapse=True, no_scrollbar=True):
+            with dpg.group(horizontal=True):
+                # ---- Sidebar ----
+                with dpg.child_window(tag="sidebar", width=190, height=-165):
+                    dpg.add_text("PANELS", color=CAT["overlay1"])
+                    dpg.add_separator()
+                    dpg.add_selectable(label="  Flag Browser", tag="nav_flag_browser",
+                                        default_value=True,
+                                        callback=lambda: self.switch_panel("flag_browser"))
+                    dpg.add_selectable(label="  ApplicationSettings", tag="nav_app_settings",
+                                        callback=lambda: self.switch_panel("app_settings"))
+                    dpg.add_spacer(height=10)
+                    dpg.add_separator()
+                    dpg.add_spacer(height=10)
+                    dpg.add_text("STATUS", color=CAT["overlay1"])
+                    dpg.add_separator()
+                    with dpg.group(horizontal=True):
+                        dpg.add_text("●", color=CAT["green"])
+                        dpg.add_text("Local JSON demo")
+                    dpg.add_text(f"{len(self.flags_list)} known flags", color=CAT["subtext0"],
+                                 tag="sidebar_flag_count")
 
-                        with dpg.child_window(tag="available_flags_list", height=190):
-                            self.update_flag_list()
+                # ---- Main content ----
+                with dpg.child_window(tag="main_panel_area", width=-1, height=-165):
+                    self.create_flag_browser_panel()
+                    self.create_application_settings_panel()
 
-                        dpg.add_spacer(height=8)
-                        dpg.add_text("Selected Flag: None", tag="selected_flag_text")
-
-                        with dpg.group(horizontal=True, tag="value_group"):
-                            dpg.add_input_text(tag="flag_value_input", width=-150, hint="Value")
-
-                        dpg.add_button(label="Set Value", callback=self.set_flag_value)
-
-                        dpg.add_spacer(height=10)
-                        dpg.add_separator()
-
-                        with dpg.group(horizontal=True):
-                            dpg.add_text("Modified Flags")
-                            dpg.add_input_text(hint="Search", callback=self.update_modified_search,
-                                                width=-1, tag="modified_search_input")
-
-                        with dpg.child_window(tag="enabled_flags_list", autosize_x=True, autosize_y=True):
-                            self.update_enabled_flags_list()
-
-                with dpg.tab(label="Settings"):
-                    dpg.add_spacer(height=8)
-                    dpg.add_input_text(label="JSON Path", default_value=self.JSON_PATH,
-                                        readonly=True, tag="json_path_input", width=-1)
-                    dpg.add_button(label="Refresh Flag Names", callback=self.fetch_flags_manual)
-                    dpg.add_button(label="Clear All Modified Flags", callback=self.show_clear_confirmation)
-                    dpg.add_spacer(height=8)
-                    dpg.add_text("", tag="json_feedback")
+            # ---- Bottom: Application Log ----
+            with dpg.child_window(tag="log_panel", height=155, autosize_x=True):
+                with dpg.group(horizontal=True):
+                    dpg.add_text("Application Log", color=CAT["pink"])
+                    dpg.add_spacer(width=10)
+                    dpg.add_button(label="Clear", small=True, callback=self.clear_log)
+                dpg.add_separator()
+                with dpg.child_window(tag="app_log_list", autosize_x=True, autosize_y=True):
+                    pass
 
             dpg.add_separator()
             with dpg.group(horizontal=True):
-                dpg.add_text("© 2026 Diversion | Made by lumyna.cc", color=CAT["pink"])
-                dpg.add_text("  •  Catppuccin Mocha (Pink)", color=CAT["subtext0"])
-            dpg.add_text("Demo build — no network interception features included.",
-                         color=CAT["overlay0"])
+                dpg.add_text("© 2026 Flag Browser | Made by lumyna.cc", color=CAT["pink"])
+                dpg.add_text("  •  Catppuccin Mocha (Pink)  •  Demo build, no network interception",
+                             color=CAT["overlay0"])
+
+        with dpg.item_handler_registry(tag="root_resize_handler"):
+            pass
+
+    def switch_panel(self, panel):
+        self.active_panel = panel
+        dpg.configure_item("flag_browser_panel", show=(panel == "flag_browser"))
+        dpg.configure_item("app_settings_panel", show=(panel == "app_settings"))
+        dpg.set_value("nav_flag_browser", panel == "flag_browser")
+        dpg.set_value("nav_app_settings", panel == "app_settings")
+
+    # ====================== FLAG BROWSER PANEL ======================
+    def create_flag_browser_panel(self):
+        with dpg.group(tag="flag_browser_panel", show=True):
+            with dpg.group(horizontal=True):
+                dpg.add_text("Flag Browser", color=CAT["pink"])
+                dpg.add_spacer(width=8)
+                dpg.add_text("browse, search, and set flag values", color=CAT["overlay1"])
+            dpg.add_separator()
+
+            with dpg.group(horizontal=True):
+                # --- Left: available flags + editor ---
+                with dpg.child_window(width=430, height=-1):
+                    dpg.add_text("Available Flags")
+                    dpg.add_input_text(callback=self.update_search, width=-1,
+                                        tag="search_input", hint="Search")
+
+                    with dpg.child_window(tag="available_flags_list", height=220):
+                        self.update_flag_list()
+
+                    dpg.add_spacer(height=8)
+                    dpg.add_text("Selected Flag: None", tag="selected_flag_text")
+
+                    with dpg.group(horizontal=True, tag="value_group"):
+                        dpg.add_input_text(tag="flag_value_input", width=-150, hint="Value")
+
+                    dpg.add_button(label="Set Value", callback=self.set_flag_value)
+
+                    dpg.add_spacer(height=10)
+                    dpg.add_separator()
+                    dpg.add_spacer(height=6)
+
+                    dpg.add_text("JSON Path", color=CAT["overlay1"])
+                    dpg.add_input_text(default_value=self.JSON_PATH, readonly=True,
+                                        tag="json_path_input", width=-1)
+                    with dpg.group(horizontal=True):
+                        dpg.add_button(label="Refresh Flag Names", callback=self.fetch_flags_manual)
+                        dpg.add_button(label="Clear All Modified Flags", callback=self.show_clear_confirmation)
+                    dpg.add_text("", tag="json_feedback")
+
+                # --- Right: modified flags ---
+                with dpg.child_window(width=-1, height=-1):
+                    with dpg.group(horizontal=True):
+                        dpg.add_text("Modified Flags")
+                        dpg.add_input_text(hint="Search", callback=self.update_modified_search,
+                                            width=-1, tag="modified_search_input")
+                    dpg.add_separator()
+                    with dpg.child_window(tag="enabled_flags_list", autosize_x=True, autosize_y=True):
+                        self.update_enabled_flags_list()
 
     def fetch_flags_manual(self, sender=None, app_data=None):
         self.fetch_flags()
         self.update_flag_list()
+        if dpg.does_item_exist("sidebar_flag_count"):
+            dpg.set_value("sidebar_flag_count", f"{len(self.flags_list)} known flags")
         self.show_feedback("Flag names refreshed.", list(CAT["green"]))
+        self.log(f"Refreshed flag names ({len(self.flags_list)} loaded)", level="SUCCESS")
 
     # ---- Flag list ----
     def update_flag_list(self, query=""):
@@ -510,10 +614,15 @@ class FlagBrowserDemo:
         self.update_enabled_flags_list()
         self.show_feedback(f"Cleared {len(flag_order)} modified flags.", list(CAT["green"]))
 
-    # ====================== APPLICATION SETTINGS WINDOW ======================
-    def create_application_settings_window(self):
-        with dpg.window(label="ApplicationSettings - lumyna.cc (Demo)", tag="application_settings_window",
-                         width=600, height=435, pos=[560, 50]):
+    # ====================== APPLICATION SETTINGS PANEL ======================
+    def create_application_settings_panel(self):
+        with dpg.group(tag="app_settings_panel", show=False):
+            with dpg.group(horizontal=True):
+                dpg.add_text("ApplicationSettings", color=CAT["pink"])
+                dpg.add_spacer(width=8)
+                dpg.add_text("filter, categorize, and edit values inline", color=CAT["overlay1"])
+            dpg.add_separator()
+
             with dpg.group(horizontal=True):
                 dpg.add_input_text(tag="appsettings_filter_input", hint="filter", width=-200,
                                     callback=self.update_appsettings_filter)
@@ -522,6 +631,7 @@ class FlagBrowserDemo:
             dpg.add_radio_button(items=["Local", "Dynamic", "Static"], default_value="Local",
                                   callback=self.set_appsettings_category,
                                   tag="appsettings_category_radio", horizontal=True)
+            dpg.add_spacer(height=4)
 
             with dpg.child_window(tag="appsettings_list", autosize_x=True, autosize_y=True):
                 pass
