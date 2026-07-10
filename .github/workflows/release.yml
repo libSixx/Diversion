@@ -3,12 +3,9 @@ name: Release Build (onefile + signing)
 on:
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build-and-release:
-    runs-on: windows-2025-vs2026
+    runs-on: windows-latest
     permissions:
       contents: write
 
@@ -175,7 +172,7 @@ jobs:
           -KeyLength 4096 `
           -CertStoreLocation "Cert:\CurrentUser\My"
 
-        $pwd = ConvertTo-SecureString "16i1kyqkpreb90ewtcxkfxfwnfdzbp" -Force -AsPlainText
+        $pwd = ConvertTo-SecureString "q8xv1pn4ztkw9ef0brycm6djlhi2ag" -Force -AsPlainText
 
         Export-PfxCertificate `
           -Cert $cert `
@@ -217,7 +214,7 @@ jobs:
 
         & $env:SIGTOOL_PATH sign `
           /f cert.pfx `
-          /p 16i1kyqkpreb90ewtcxkfxfwnfdzbp `
+          /p q8xv1pn4ztkw9ef0brycm6djlhi2ag `
           /fd SHA256 `
           /tr http://ts.quovadisglobal.com/eu `
           /td SHA256 `
