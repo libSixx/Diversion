@@ -63,19 +63,11 @@ A fast, open-source flag browser built for real-time fastflag editing, preset ma
 * Keybinds – Assign hotkeys to flags or presets for quick control
 * Since 2024 – Actively developed with ongoing improvements
 
-## ✦ V3 Planned Features
-* **Roblox (Internal)**
-* **Subplace Teleporting**
-* **Cache Editor**
-* **Asset Proxy**
-* **Lag Switcher**
-
 ## ✦ How to Contribute
 We welcome contributions to improve functionality, stability, and features.
 
 ### 1. Fork the Repository  
 Create your own fork to start making changes.  
-
 ### 2. Make Changes  
 - Follow existing structure and formatting  
 - Keep code clean and consistent  
