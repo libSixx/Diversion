@@ -38,8 +38,7 @@ A fast, open-source flag browser built for real-time fastflag editing, preset ma
 
 **Q: When will this be released for free and open source?**
 
-**A:** ~July
-
+**A:**It will be free soon trust
 **Q: Is this malware?**
 
 **A:** no
@@ -47,8 +46,6 @@ A fast, open-source flag browser built for real-time fastflag editing, preset ma
 **Q: Can using this get me banned?**
 
 **A:** No, it shouldn't. it doesn't interact with the Roblox client in the same way that exploits do.
-## ✦ How to use (TBA)
-### TBA
 
 ## ✦ V3 Features
 
