@@ -38,7 +38,8 @@ A fast, open-source flag browser built for real-time fastflag editing, preset ma
 
 **Q: When will this be released for free and open source?**
 
-**A:**It will be free soon trust
+**A:** July 31
+
 **Q: Is this malware?**
 
 **A:** no
