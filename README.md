@@ -104,7 +104,7 @@ Create your own fork to start making changes.
 ### V3
 * **[@Shaw](https://discordapp.com/users/1276769254359695411)**
 
-<h4 align="center">© 2026 imgui.cc</h4>
+<h4 align="center">© 2026 lumyna.cc</h4>
 
 [shield-repo-workflow]: https://img.shields.io/github/actions/workflow/status/jayrollingdice/proxy-fastflags/.github/workflows/release.yml?branch=master&label=builds
 
