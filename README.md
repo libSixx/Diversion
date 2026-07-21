@@ -34,17 +34,39 @@ A fast, open-source flag browser built for real-time fastflag editing, preset ma
 
 </div>
 
+## ✦ Info
+
+> [!IMPORTANT]
+> **Regarding Recent Claims About Diversion**
+>
+> Diversion was not based on or derived from Fleasion. We did not copy source code, assets, or implementation details from their project, and we were not aware of Fleasion someone just told me about it recently (may 2026).
+>
+> We are aware of claims suggesting that Diversion is a fork of Fleasion or that it uses their work. These claims are incorrect.
+>
+> Recent attempts to associate Diversion with GPL-related claims appear to be based on similarities in functionality rather than any shared code or licensing relationship.
+>
+> The GNU General Public License v3.0 applies only to code that is distributed under that license. It does not grant ownership over a software concept, feature, or general approach, and it does not prevent independent implementations of similar functionality.
+>
+> Diversion is a separate product with its own development process, licensing model, and distribution system. We respect open-source software and the developers behind it, but we also want to make clear that independent projects can exist with similar goals without one being derived from the other.
+
+> [!IMPORTANT]
+> **Project Clarification**
+>
+> Diversion has been independently developed since 2024, originally under the name Flag Browser. The project was created with its own codebase, design, and development process.
+>
+> For transparency, Diversion maintains its own licensing and distribution model separate from GPL-licensed projects. This project respects open-source software while protecting its own original work and development history.
+
 ## ✦ Frequently Asked Questions
 
 **Q: When will this be released for free and open source?**
 
 **A:** July 31
 
-**Q: Is this malware?**
+**Q:** Is this malware?
 
 **A:** no
 
-**Q: Can using this get me banned?**
+**Q:** Can using this get me banned?
 
 **A:** No, it shouldn't. it doesn't interact with the Roblox client in the same way that exploits do.
 
@@ -80,9 +102,6 @@ Create your own fork to start making changes.
 - static flags require a roblox restart to apply  
 - uses proxy interception (no injection)  
 - config files are automatically generated on first launch
-
-## ✦ Also check out:
-* **[Fleasion](https://github.com/fleasion/Fleasion)**
 
 ## ✦ Developers
 ### V1
