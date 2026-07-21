@@ -48,6 +48,8 @@ A fast, open-source flag browser built for real-time fastflag editing, preset ma
 > The GNU General Public License v3.0 applies only to code that is distributed under that license. It does not grant ownership over a software concept, feature, or general approach, and it does not prevent independent implementations of similar functionality.
 >
 > Diversion is a separate product with its own development process, licensing model, and distribution system. We respect open-source software and the developers behind it, but we also want to make clear that independent projects can exist with similar goals without one being derived from the other.
+>
+> just because we've been paid since 2024 doesn't mean yall could take down someones work because you decided to make something similar have it for free and call it "stolen work". have some respect
 
 > [!IMPORTANT]
 > **Project Clarification**
