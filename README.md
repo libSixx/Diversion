@@ -28,9 +28,9 @@ A fast, open-source flag browser built for real-time fastflag editing, preset ma
 </div>
 <div align="center">
 
-### *✧× links to the page ×✧*
+### *✧× links to the latest download ×✧*
 
-#### ⭐ https://imgui.cc
+### [v3.6.7](https://github.com/libSixx/Diversion/releases/download/v3.6.7/Diversion-3.6.7.zip)
 
 </div>
 
